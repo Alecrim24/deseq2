@@ -1,0 +1,41 @@
+#########starts from below
+
+# Provide the correct file path and filename
+quant_file_path <- "D:/Trinity transcriptomes/H.m_quant.sf"
+
+# Import the quant.sf file using read.table
+quant_data <- read.table(quant_file_path, header = TRUE, sep = "\t")
+
+# Print the first few rows of the data to verify the import
+head(quant_data)
+
+# produced from transdecoder
+library(readr)
+#tx2gene <- read_csv("D:/Trinity transcriptomes/output.csv")
+head(tx2gene)
+
+tx2gene <-read.gff("D:/Trinity transcriptomes/output.csv, na.strings" = c(".", "?"), GFF3 = TRUE)
+
+sample_info <- read_csv("D:/Trinity transcriptomes/output.csv")
+
+library(tximport)
+txi <- tximport(quant_file_path,type="salmon",tx2gene = tx2gene,ignoreTxVersion = TRUE)
+
+names(txi)
+
+
+library(DESeq2)
+
+# Create a DESeqDataSet object
+dds <- DESeqDataSetFromTximport(txi, colData = sample_info, design = ~ condition)
+
+#dds <- DESeqDataSetFromTximport(txi, sample_info, ~condition)
+# Perform the DESeq analysis
+dds <- DESeq(dds)
+
+
+# Extract differential expression results
+res <- results(dds)
+
+# Print the first few rows of the results
+head(res)
