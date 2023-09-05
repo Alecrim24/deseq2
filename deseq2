@@ -1,41 +1,86 @@
-#########starts from below
-
-# Provide the correct file path and filename
-quant_file_path <- "D:/Trinity transcriptomes/H.m_quant.sf"
-
-# Import the quant.sf file using read.table
-quant_data <- read.table(quant_file_path, header = TRUE, sep = "\t")
-
-# Print the first few rows of the data to verify the import
-head(quant_data)
-
-# produced from transdecoder
-library(readr)
-#tx2gene <- read_csv("D:/Trinity transcriptomes/output.csv")
-head(tx2gene)
-
-tx2gene <-read.gff("D:/Trinity transcriptomes/output.csv, na.strings" = c(".", "?"), GFF3 = TRUE)
-
-sample_info <- read_csv("D:/Trinity transcriptomes/output.csv")
-
-library(tximport)
-txi <- tximport(quant_file_path,type="salmon",tx2gene = tx2gene,ignoreTxVersion = TRUE)
-
-names(txi)
-
-
+# Load necessary libraries
 library(DESeq2)
+library(tximport)
+library(readr)
 
-# Create a DESeqDataSet object
-dds <- DESeqDataSetFromTximport(txi, colData = sample_info, design = ~ condition)
 
-#dds <- DESeqDataSetFromTximport(txi, sample_info, ~condition)
-# Perform the DESeq analysis
+
+# List of quant files
+quant_files <- c(
+    "P1_H.m_1_221020_quant.sf",
+    "P1_H.m_19-27_221020_quant.sf",
+    "P2-10-17_221020_quant.sf",
+    "P2-46-53_221020_quant.sf",
+    "P3_37-46_221020_quant.sf",
+    "P3_41-49_221020_quant.sf",
+    "P1_H.m_15-23_221020_quant.sf",
+    "P1_H.m_21-29_221020_quant.sf",
+    "P2-11-18_221020_quant.sf",
+    "P2-5-11_221020_quant.sf",
+    "P3_38-45_221020_quant.sf",
+    "P3_42-50_221020_quant.sf",
+    "P1_H.m_16-24_221020_quant.sf",
+    "P1_H.m_24-32_221020_quant.sf",
+    "P2-44-51_221020_quant.sf",
+    "P2-6-12_221020_quant.sf",
+    "P3_39-47_221020_quant.sf",
+    "P3_43-52_221020_quant.sf",
+    "P1_H.m_18-26_221020_quant.sf",
+    "P1_H.m_26-34_221020_quant.sf",
+    "P2-45-54_221020_quant.sf",
+    "P3_36-44_221020_quant.sf",
+    "P3_40-48_221020_quant.sf"
+)
+
+path_to_files <- ("/nobackup/qkdf72/Trinity/Reads/All-H.m-reads/Trimmed/salmon_out_again/all_qaunt_files")
+
+# sample info
+sampleinfo <- read_csv("Sampleinfo.csv")
+
+# Read tx2gene.csv
+tx2gene <- readRDS("H.m_tx2gene.RDS")
+
+# Import transcript-level counts using tximport
+txi <- tximport(quant_files, type = "salmon", tx2gene = tx2gene) # works upto this point
+
+
+head(txi$counts)
+
+
+
+
+
+# Create DESeqDataSet
+dds <- DESeqDataSetFromTximport(txi, colData = coldata, design = ~ condition)
+
+# Perform DESeq2 analysis
 dds <- DESeq(dds)
 
+dds
 
-# Extract differential expression results
+
+head(counts(dds))
+
+boxplot(counts(dds))
+vsd <- vst(dds,blind=TRUE)
+plotPCA(vsd,intgroup="condition")
+
+
+
+#Whereas colData will display the meta data that has been stored with the object.
+
+colData(dds)
+
+# Get differential expression results
 res <- results(dds)
 
-# Print the first few rows of the results
-head(res)
+
+
+
+# Add gene names from tx2gene.csv to results
+#res$gene_id <- rownames(res)
+#res <- merge(res, tx2gene, by.x = "gene_id", by.y = "transcript_id")
+
+# Write results to a CSV file
+#write.csv(res, "deseq2_results.csv", row.names = FALSE)
+
