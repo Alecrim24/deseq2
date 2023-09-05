@@ -41,7 +41,7 @@ sampleinfo <- read_csv("Sampleinfo.csv")
 tx2gene <- readRDS("H.m_tx2gene.RDS")
 
 # Import transcript-level counts using tximport
-txi <- tximport(quant_files, type = "salmon", tx2gene = tx2gene) # works upto this point
+txi <- tximport(quant_files, type = "salmon", tx2gene = tx2gene) 
 
 
 head(txi$counts)
@@ -51,7 +51,7 @@ head(txi$counts)
 
 
 # Create DESeqDataSet
-dds <- DESeqDataSetFromTximport(txi, colData = coldata, design = ~ condition)
+dds <- DESeqDataSetFromTximport(txi, colData = sampleinfo, design = ~ Condition)
 
 # Perform DESeq2 analysis
 dds <- DESeq(dds)
