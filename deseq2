@@ -36,6 +36,7 @@ quant_files <- c(
     "P1_H.m_24-32_221020_quant.sf",
     "P2-44-51_221020_quant.sf",
     "P2-6-12_221020_quant.sf",
+    "P2-4-10_221020_L002_quant.sf",
     "P3_39-47_221020_quant.sf",
     "P3_43-52_221020_quant.sf",
     "P1_H.m_18-26_221020_quant.sf",
