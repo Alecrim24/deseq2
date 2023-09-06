@@ -1,3 +1,16 @@
+# load R
+module purge
+
+module load bioinformatics
+
+module load r/gcc/4.3.1
+
+R
+
+
+
+
+
 # Load necessary libraries
 library(DESeq2)
 library(tximport)
