@@ -115,6 +115,19 @@ dir.create("de_analysis",showWarnings = FALSE)
   arrange(padj) %>% 
    write_csv("de_analysis/conditions_DESeq_all.csv")
 
+# Filtering to the differentially-expressed genes can be achieved using the filter function from dplyr.
  results(de_Condition,tidy=TRUE) %>%
   filter(padj < 0.05) %>% 
   write.csv("de_analysis/conditions_filter_DESeq_sig.csv")
+
+# It is also a good idea to save the results object itself so we can re-use later.
+
+saveRDS(de_Condition, file="Robjects/de_Condition.rds")
+
+#Each point on this plot represents and individual gene with the x- and y-axes being the overall expression level and magnitude of difference respectively. 
+#Significant genes are automatically highlighted. 
+#The fanning effect at low expression levels is often seen due to high relative fold-change at low expression levels.
+
+plotMA(de_Condition)
+
+
