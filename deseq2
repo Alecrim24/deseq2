@@ -97,7 +97,24 @@ saveRDS(dds, file="Robjects/dds.rds")
 # look at it
 colData(dds)
 
-de_treated<- DESeq(dds)
+
+de_Condition<- DESeq(dds) 
+
+results(de_Condition)
+
+library(dplyr)
+ results(de_Condition, tidy=TRUE)
+
+results(de_Condition,tidy=TRUE) %>%
+  arrange(padj) %>%  
+  head(n=10)
 
 
+dir.create("de_analysis",showWarnings = FALSE)
+ results(de_Condition,tidy=TRUE) %>%
+  arrange(padj) %>% 
+   write_csv("de_analysis/conditions_DESeq_all.csv")
 
+ results(de_Condition,tidy=TRUE) %>%
+  filter(padj < 0.05) %>% 
+  write.csv("de_analysis/conditions_filter_DESeq_sig.csv")
