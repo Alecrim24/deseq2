@@ -88,13 +88,16 @@ colData(dds)
 # Get differential expression results
 res <- results(dds)
 
+dds$condition <- as.factor(dds$condition)
+
+#save the work upto know for downstream analysis
+dir.create("Robjects/",showWarnings = FALSE)
+saveRDS(dds, file="Robjects/dds.rds")
+
+# look at it
+colData(dds)
+
+de_treated<- DESeq(dds)
 
 
-
-# Add gene names from tx2gene.csv to results
-#res$gene_id <- rownames(res)
-#res <- merge(res, tx2gene, by.x = "gene_id", by.y = "transcript_id")
-
-# Write results to a CSV file
-#write.csv(res, "deseq2_results.csv", row.names = FALSE)
 
