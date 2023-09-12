@@ -52,7 +52,9 @@ path_to_files <- ("/nobackup/qkdf72/Trinity/Reads/All-H.m-reads/Trimmed/salmon_o
 sampleinfo <- read_csv("Sampleinfo.csv")
 
 # Read tx2gene.csv
-tx2gene <- readRDS("H.m_tx2gene.RDS")
+#tx2gene <- readRDS("H.m_tx2gene.RDS")
+
+tx2gene <- readRDS("tx2gene_all.RDS")
 
 # Import transcript-level counts using tximport
 txi <- tximport(quant_files, type = "salmon", tx2gene = tx2gene) 
